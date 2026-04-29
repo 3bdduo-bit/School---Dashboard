@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white" onContextMenu={e => e.preventDefault()}>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white">
         <button
           onClick={() => setDarkMode(d => !d)}
           className="fixed top-6 right-6 z-[300] w-16 h-8 bg-slate-200 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-full cursor-pointer transition-all duration-300 flex items-center px-1"

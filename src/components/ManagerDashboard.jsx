@@ -31,7 +31,10 @@ const GRADE_OPTIONS = [
 export default function ManagerDashboard() {
   const [search, setSearch] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
+  const [teacherFilter, setTeacherFilter] = useState('');
   const searchRef = useRef(null);
+
+  const teacherList = Object.values(teacherData);
 
   const filteredStudents = useMemo(() => {
     return sortedStudents.filter(s => {
@@ -62,14 +65,72 @@ export default function ManagerDashboard() {
         </div>
       </header>
 
-      {/* No standalone search box here — search is now embedded in the Students table below */}
+      {/* Group & Teacher Selection Section */}
+      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6 text-center border-b dark:border-slate-700 pb-4">
+          تصفح نتائج المجموعات والمعلمين
+        </h2>
+        
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex-1">
+            <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2 mr-2">اختر المعلم / المجموعة:</label>
+            <select
+              value={teacherFilter}
+              onChange={e => setTeacherFilter(e.target.value)}
+              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-800 dark:text-white dark:bg-slate-700 font-bold cursor-pointer"
+            >
+              <option value="">-- عرض جميع المعلمين --</option>
+              {teacherList.map((t, idx) => (
+                <option key={idx} value={t.name}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+          {teacherFilter && (
+            <div className="flex items-end">
+              <button
+                onClick={() => setTeacherFilter('')}
+                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold rounded-xl transition-colors border border-slate-200 dark:border-slate-600"
+              >
+                عرض الكل
+              </button>
+            </div>
+          )}
+        </div>
 
-      {/* Teacher Sections */}
-      {Object.values(teacherData).map((t, i) => (
-        <TeacherSection key={i} teacher={t} />
-      ))}
+        {!teacherFilter && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {teacherList.map((t, i) => (
+              <button
+                key={i}
+                onClick={() => setTeacherFilter(t.name)}
+                className="p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all text-right group"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">{t.name}</span>
+                  <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-bold">
+                    {t.total} طالب
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">نسبة الامتياز:</span>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                    {t.total > 0 ? ((t.grades['امتياز'] / t.total) * 100).toFixed(1) : 0}%
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
 
-      {/* Teacher Ranking */}
+      {/* Teacher Sections - Only show when a teacher is selected */}
+      {teacherFilter && teacherList
+        .filter(t => t.name === teacherFilter)
+        .map((t, i) => (
+          <TeacherSection key={i} teacher={t} />
+        ))}
+
+      {/* Teacher Ranking - Always Show */}
       <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
         <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-4 md:mb-6 border-b dark:border-slate-700 pb-4 text-center">
           ترتيب المعلمين حسب نسبة الامتياز
@@ -104,7 +165,7 @@ export default function ManagerDashboard() {
         </div>
       </section>
 
-      {/* All Students Ranking */}
+      {/* All Students Ranking - Always Show */}
       <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
         <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-4 md:mb-6 border-b dark:border-slate-700 pb-4 text-center">
           نتائج جميع الطلاب
@@ -112,7 +173,6 @@ export default function ManagerDashboard() {
 
         {/* Search & Filter Bar */}
         <div className="flex flex-col md:flex-row gap-3 mb-4">
-          {/* Name search */}
           <div className="relative flex-1">
             <input
               ref={searchRef}
@@ -127,7 +187,6 @@ export default function ManagerDashboard() {
             </svg>
           </div>
 
-          {/* Grade filter dropdown */}
           <div className="relative">
             <select
               value={gradeFilter}
@@ -143,21 +202,16 @@ export default function ManagerDashboard() {
             </svg>
           </div>
 
-          {/* Clear filters button */}
           {(search || gradeFilter) && (
             <button
               onClick={() => { setSearch(''); setGradeFilter(''); searchRef.current?.focus(); }}
               className="px-4 py-3 rounded-xl border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold transition-colors flex items-center gap-2 whitespace-nowrap"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
               مسح الفلتر
             </button>
           )}
         </div>
 
-        {/* Results count */}
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 font-semibold">
           يتم عرض <span className="text-blue-600 dark:text-blue-400 font-bold">{filteredStudents.length}</span> من أصل {sortedStudents.length} طالب
         </p>
@@ -190,9 +244,6 @@ export default function ManagerDashboard() {
                   </tr>
                 );
               })}
-              {filteredStudents.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-slate-500 font-bold">لا يوجد طلاب مطابقين للبحث.</td></tr>
-              )}
             </tbody>
           </table>
         </div>

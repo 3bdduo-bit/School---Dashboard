@@ -1,4 +1,4 @@
-import logo from '../assets/logo-m.png';
+import logo from '../assets/final-logo.jpeg';
 
 export default function SplashScreen() {
   return (
@@ -6,9 +6,8 @@ export default function SplashScreen() {
       <div className="relative">
         <div className="absolute -inset-10 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="relative flex flex-col items-center">
-          <div className="w-48 h-48 mb-8 bg-white/10 backdrop-blur-md  flex items-center justify-center border border-white/20 shadow-2xl animate-bounce overflow-hidden">
-            
-            <img src={logo} alt="Logo" className="w-full h-full object-contain p-4" />
+          <div className="w-48 h-48 mb-8 bg-white rounded-full flex items-center justify-center shadow-2xl animate-bounce overflow-hidden">
+            <img src={logo} alt="Logo" className="w-full h-full object-contain p-2" />
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-center tracking-tighter">
             النتيجة السنوية لمدرسة التربية بالقرءان الكريم

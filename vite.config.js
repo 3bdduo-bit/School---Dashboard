@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: "/School---Dashboard/ , /School---Dashboard/ , /school-dashboard/ , /school-dashboard-vite/ , /school-dashboard-react-vite/ , /school-dashboard-reactjs/ , /school-dashboard-react-js/ , /school-dashboard-reactjs-vite/ , /school-dashboard-react-js-vite/ , /school-dashboard-reactjs-vite/ , /school-dashboard-react-js-vite/ , /school-dashboard-reactjs-vite/ , /school-dashboard-react-js-vite/",
+  base: "/",
 });

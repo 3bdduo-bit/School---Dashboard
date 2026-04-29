@@ -90,21 +90,50 @@ export default function TeacherView() {
     setSelectedTeacher(selected);
   };
 
+  const handleTeacherLogout = () => {
+    setSelectedTeacher('');
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 shadow-sm rounded-2xl flex flex-col md:flex-row items-center gap-4 justify-between">
         <div className="text-center md:text-right">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-white">مرحباً بك أستاذي الفاضل</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">اختر اسمك من القائمة لعرض بيانات طلاب فصلك حصرياً</p>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+            {selectedTeacher ? `مرحباً بك: أ / ${selectedTeacher}` : 'مرحباً بك أستاذي الفاضل'}
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {selectedTeacher 
+              ? 'يتم الآن عرض بيانات طلاب فصلك حصرياً' 
+              : 'اختر اسمك من القائمة لعرض بيانات طلاب فصلك حصرياً'}
+          </p>
         </div>
-        <select
-          onChange={handleSelect}
-          defaultValue=""
-          className="px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none w-full md:w-72 bg-slate-50 dark:bg-slate-700 dark:text-white font-bold text-slate-700 cursor-pointer"
-        >
-          <option value="">-- اضغط لاختيار اسمك --</option>
-          {teachers.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
+
+        {selectedTeacher ? (
+          <button
+            onClick={handleTeacherLogout}
+            className="px-6 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4-4H3" />
+            </svg>
+            تسجيل الخروج من الحساب
+          </button>
+        ) : (
+          <select
+            onChange={handleSelect}
+            defaultValue=""
+            className="px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none w-full md:w-72 bg-slate-50 dark:bg-slate-700 dark:text-white font-bold text-slate-700 cursor-pointer"
+          >
+            <option value="">-- اضغط لاختيار اسمك --</option>
+            {teachers.map(t => {
+              const locked = localStorage.getItem('lockedTeacher_2025');
+              // If someone is locked, we can either hide others or just let the handleSelect handle it
+              // Hiding others makes it "don't allow" more clear
+              if (locked && t !== locked) return null;
+              return <option key={t} value={t}>{t}</option>
+            })}
+          </select>
+        )}
       </div>
 
       {selectedTeacher && teacherData[selectedTeacher] && (

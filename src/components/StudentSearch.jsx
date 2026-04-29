@@ -25,11 +25,11 @@ export default function StudentSearch() {
     let searchCount = parseInt(localStorage.getItem('studentSearchCount_2025_v2') || '0');
 
     if (lastSearched !== searchKey) {
-      if (searchCount >= 3) {
+      if (searchCount >= 5) {
         Swal.fire({
           icon: 'warning',
           title: 'تنبيه',
-          text: 'لقد استنفدت عدد مرات البحث المتاحة (3 مرات كحد أقصى).',
+          text: 'لقد استنفدت عدد مرات البحث المتاحة (5 مرات كحد أقصى).',
           confirmButtonText: 'موافق',
           confirmButtonColor: '#9333ea',
         });
@@ -97,7 +97,7 @@ export default function StudentSearch() {
           <h3 className="text-xl font-bold text-slate-800 dark:text-white border-b dark:border-slate-600 pb-3 mb-4 text-center">نتيجة الطالب</h3>
           <div className="space-y-3 mb-4 text-center">
             <p className="text-purple-600 dark:text-purple-400 font-bold text-sm">
-              عدد مرات البحث المستخدمة: {result.searchCount} من 3
+              عدد مرات البحث المستخدمة: {result.searchCount} من 5
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
