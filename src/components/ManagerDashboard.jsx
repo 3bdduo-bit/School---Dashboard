@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import { allStudents, teacherData } from '../data';
 import TeacherSection from './TeacherSection';
 import GradeTag, { getGradeInfo } from './GradeTag';
+import { normalizeArabic } from '../utils/arabic';
 
 const validStudents = allStudents.filter(s => s.total > 0 && s.name);
 const totalPct = validStudents.reduce((sum, s) => sum + s.percentage * 100, 0);
@@ -37,8 +38,10 @@ export default function ManagerDashboard() {
   const teacherList = Object.values(teacherData);
 
   const filteredStudents = useMemo(() => {
+    const normalizedSearch = normalizeArabic(search);
     return sortedStudents.filter(s => {
-      const matchName = !search || s.name.includes(search);
+      const normalizedName = normalizeArabic(s.name);
+      const matchName = !normalizedSearch || normalizedName.includes(normalizedSearch);
       const pct = s.percentage * 100;
       let matchGrade = true;
       if (gradeFilter === 'امتياز')  matchGrade = pct >= 90;
@@ -53,7 +56,7 @@ export default function ManagerDashboard() {
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Header Stats */}
-      <header className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6 rounded-2xl">
+      <header className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6 rounded-2xl animate-fade-in">
         <div className="text-center lg:text-right w-full lg:w-auto">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">لوحة تحكم الإدارة</h1>
           <p className="text-sm md:text-base text-slate-500 dark:text-slate-400">نظرة عامة على أداء جميع الفصول والمعلمين</p>
@@ -66,7 +69,7 @@ export default function ManagerDashboard() {
       </header>
 
       {/* Group & Teacher Selection Section */}
-      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
+      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl animate-scale-up" style={{ animationDelay: '0.1s' }}>
         <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6 text-center border-b dark:border-slate-700 pb-4">
           تصفح نتائج المجموعات والمعلمين
         </h2>
@@ -89,7 +92,7 @@ export default function ManagerDashboard() {
             <div className="flex items-end">
               <button
                 onClick={() => setTeacherFilter('')}
-                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold rounded-xl transition-colors border border-slate-200 dark:border-slate-600"
+                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold rounded-xl transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
               >
                 عرض الكل
               </button>
@@ -103,17 +106,17 @@ export default function ManagerDashboard() {
               <button
                 key={i}
                 onClick={() => setTeacherFilter(t.name)}
-                className="p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all text-right group"
+                className="p-3 md:p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all text-right group card-hover shadow-sm"
               >
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">{t.name}</span>
-                  <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-bold">
+                <div className="flex justify-between items-center mb-1 md:mb-2">
+                  <span className="font-bold text-sm md:text-base text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">{t.name}</span>
+                  <span className="text-[10px] md:text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-bold">
                     {t.total} طالب
                   </span>
                 </div>
                 <div className="flex gap-2">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">نسبة الامتياز:</span>
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-semibold">نسبة الامتياز:</span>
+                  <span className="text-[10px] md:text-xs text-emerald-600 dark:text-emerald-400 font-bold">
                     {t.total > 0 ? ((t.grades['امتياز'] / t.total) * 100).toFixed(1) : 0}%
                   </span>
                 </div>
@@ -131,11 +134,11 @@ export default function ManagerDashboard() {
         ))}
 
       {/* Teacher Ranking - Always Show */}
-      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
+      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl animate-scale-up" style={{ animationDelay: '0.2s' }}>
         <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-4 md:mb-6 border-b dark:border-slate-700 pb-4 text-center">
           ترتيب المعلمين حسب نسبة الامتياز
         </h2>
-        <div className="overflow-x-auto overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700" style={{ maxHeight: 600 }}>
+        <div className="overflow-x-auto overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 custom-scrollbar" style={{ maxHeight: 600 }}>
           <table className="w-full text-right mobile-card-table">
             <thead className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white border-b border-slate-200 dark:border-slate-600 sticky top-0 z-10 shadow-sm">
               <tr>
@@ -148,13 +151,13 @@ export default function ManagerDashboard() {
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
               {teacherStats.map((t, i) => (
-                <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200">
                   <td className="p-3 md:p-4 text-slate-500 dark:text-slate-400 font-medium" data-label="الترتيب">{i + 1}</td>
                   <td className="p-3 md:p-4 font-bold text-slate-800 dark:text-white" data-label="المعلم / الفصل">{t.name}</td>
                   <td className="p-3 md:p-4 text-slate-600 dark:text-slate-300" data-label="إجمالي الطلاب">{t.total}</td>
                   <td className="p-3 md:p-4 font-semibold text-slate-800 dark:text-white" data-label="عدد الامتياز">{t.excellentCount}</td>
                   <td className="p-3 md:p-4" data-label="نسبة الامتياز">
-                    <span className="bg-slate-100 dark:bg-slate-600 text-sky-700 dark:text-sky-300 py-1 px-3 rounded-md text-sm font-bold border border-slate-200 dark:border-slate-500">
+                    <span className="bg-slate-100 dark:bg-slate-600 text-sky-700 dark:text-sky-300 py-1.5 px-4 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-500 shadow-sm">
                       {t.excellentPercentage.toFixed(1)}%
                     </span>
                   </td>
@@ -166,7 +169,7 @@ export default function ManagerDashboard() {
       </section>
 
       {/* All Students Ranking - Always Show */}
-      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl">
+      <section className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 md:p-6 shadow-sm rounded-2xl animate-scale-up" style={{ animationDelay: '0.3s' }}>
         <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-4 md:mb-6 border-b dark:border-slate-700 pb-4 text-center">
           نتائج جميع الطلاب
         </h2>
@@ -205,7 +208,7 @@ export default function ManagerDashboard() {
           {(search || gradeFilter) && (
             <button
               onClick={() => { setSearch(''); setGradeFilter(''); searchRef.current?.focus(); }}
-              className="px-4 py-3 rounded-xl border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold transition-colors flex items-center gap-2 whitespace-nowrap"
+              className="px-4 py-3 rounded-xl border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold transition-all flex items-center gap-2 whitespace-nowrap shadow-sm"
             >
               مسح الفلتر
             </button>
@@ -216,7 +219,7 @@ export default function ManagerDashboard() {
           يتم عرض <span className="text-blue-600 dark:text-blue-400 font-bold">{filteredStudents.length}</span> من أصل {sortedStudents.length} طالب
         </p>
 
-        <div className="overflow-x-auto overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700" style={{ maxHeight: 600 }}>
+        <div className="overflow-x-auto overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 custom-scrollbar" style={{ maxHeight: 600 }}>
           <table className="w-full text-right mobile-card-table">
             <thead className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white border-b border-slate-200 dark:border-slate-600 sticky top-0 z-10 shadow-sm">
               <tr>
@@ -232,13 +235,13 @@ export default function ManagerDashboard() {
               {filteredStudents.map((s, i) => {
                 const p = (s.percentage * 100).toFixed(1);
                 return (
-                  <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                  <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200">
                     <td className="p-3 md:p-4 text-slate-500 dark:text-slate-400 font-medium" data-label="الترتيب">{sortedStudents.indexOf(s) + 1}</td>
                     <td className="p-3 md:p-4 font-bold text-slate-800 dark:text-white" data-label="اسم الطالب">{s.name}</td>
                     <td className="p-3 md:p-4 text-slate-600 dark:text-slate-300" data-label="المعلم / الفصل">{s.sheet}</td>
                     <td className="p-3 md:p-4 font-semibold text-slate-800 dark:text-white" data-label="المجموع">{s.total}</td>
                     <td className="p-3 md:p-4" data-label="النسبة">
-                      <span className="bg-slate-100 dark:bg-slate-600 text-slate-700 dark:text-white py-1 px-3 rounded-md text-sm font-bold border border-slate-200 dark:border-slate-500">{p}%</span>
+                      <span className="bg-slate-100 dark:bg-slate-600 text-slate-700 dark:text-white py-1.5 px-4 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-500 shadow-sm">{p}%</span>
                     </td>
                     <td className="p-3 md:p-4" data-label="التقدير"><GradeTag percentage={s.percentage} /></td>
                   </tr>
@@ -264,9 +267,9 @@ function StatCard({ label, value, color, extra = '' }) {
     sky: 'text-sky-600 dark:text-sky-400',
   };
   return (
-    <div className={`p-3 md:px-6 md:py-4 rounded-xl border text-center ${colors[color]} ${extra}`}>
-      <p className={`text-xs md:text-sm font-semibold mb-1 ${labelColors[color]}`}>{label}</p>
-      <p className="text-xl md:text-3xl font-bold">{value}</p>
+    <div className={`p-3 md:px-6 md:py-4 rounded-xl border text-center card-hover shadow-sm ${colors[color]} ${extra}`}>
+      <p className={`text-xs md:text-sm font-bold mb-1 ${labelColors[color]}`}>{label}</p>
+      <p className="text-xl md:text-3xl font-extrabold">{value}</p>
     </div>
   );
 }

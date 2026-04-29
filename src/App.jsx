@@ -19,6 +19,18 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  const toggleDarkMode = () => {
+    setLoadingText('جاري تغيير وضع المظهر...');
+    const prevPhase = phase;
+    setPhase('loading');
+    setTimeout(() => {
+      setDarkMode(prev => !prev);
+      setTimeout(() => {
+        setPhase(prevPhase);
+      }, 1000);
+    }, 1000);
+  };
+
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
     localStorage.setItem('school_dashboard_theme', darkMode ? 'dark' : 'light');
@@ -45,7 +57,6 @@ export default function App() {
           const input = Swal.getInput();
           if (input) {
             input.focus();
-            // Create toggle button container
             const toggleContainer = document.createElement('div');
             toggleContainer.style.display = 'flex';
             toggleContainer.style.justifyContent = 'center';
@@ -62,19 +73,13 @@ export default function App() {
             const hideIcon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>`;
 
             toggleBtn.innerHTML = `${showIcon} <span>إظهار كلمة المرور</span>`;
-            
             toggleBtn.onclick = () => {
               const isPassword = input.type === 'password';
               input.type = isPassword ? 'text' : 'password';
-              toggleBtn.innerHTML = isPassword 
-                ? `${hideIcon} <span>إخفاء كلمة المرور</span>`
-                : `${showIcon} <span>إظهار كلمة المرور</span>`;
+              toggleBtn.innerHTML = isPassword ? `${hideIcon} <span>إخفاء كلمة المرور</span>` : `${showIcon} <span>إظهار كلمة المرور</span>`;
             };
-            
             toggleContainer.appendChild(toggleBtn);
             input.parentElement.appendChild(toggleContainer);
-            input.style.paddingLeft = '12px'; // Reset padding
-            input.style.paddingRight = '12px';
           }
         },
         preConfirm: (val) => {
@@ -108,9 +113,9 @@ export default function App() {
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white transition-colors duration-500">
         <button
-          onClick={() => setDarkMode(d => !d)}
+          onClick={toggleDarkMode}
           className="fixed top-6 right-6 z-[300] w-16 h-8 bg-slate-200 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-full cursor-pointer transition-all duration-300 flex items-center px-1"
           style={{ justifyContent: darkMode ? 'flex-end' : 'flex-start' }}
         >
