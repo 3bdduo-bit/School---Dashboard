@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: #f8fafc;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .mobile-card-table thead { display: none; }
+  .mobile-card-table tr {
+    display: block;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+  .dark .mobile-card-table tr {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .mobile-card-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left !important;
+  }
+  .mobile-card-table td:last-child { border-bottom: none; }
+  .mobile-card-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #64748b;
+    margin-left: 1rem;
+    text-align: right;
+  }
+}
